@@ -1,6 +1,4 @@
-# Airflow + MLflow + Grafana: End-to-End ML Pipeline
-
-A complete production-ready machine learning pipeline demonstrating anomaly detection with integrated experiment tracking, orchestration, and monitoring.
+# Airflow + MLflow + Grafana: End-to-End Pipeline
 
 ## 📋 Overview
 
@@ -35,7 +33,7 @@ The system consists of four containerized services working together:
 5. MLflow stores artifacts (models, files) using artifact proxy
 6. **Grafana** queries PostgreSQL to visualize experiment metrics
 
-## 🔧 Technologies & Tools
+## 🔧 Tools
 
 ### Apache Airflow
 **Purpose**: Workflow orchestration and task scheduling
