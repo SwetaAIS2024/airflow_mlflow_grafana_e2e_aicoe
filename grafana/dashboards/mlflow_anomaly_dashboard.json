@@ -1,0 +1,132 @@
+{
+  "title": "Traffic Anomaly Detection - MLflow Metrics",
+  "uid": "mlflow-anomaly",
+  "version": 1,
+  "timezone": "browser",
+  "schemaVersion": 16,
+  "refresh": "30s",
+  "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Total Experiment Runs",
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0},
+        "targets": [
+          {
+            "datasource": "MLflow PostgreSQL",
+            "format": "table",
+            "rawSql": "SELECT COUNT(*) as total_runs FROM runs WHERE experiment_id IN (SELECT experiment_id FROM experiments WHERE name = 'traffic_anomaly_detection')",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": null, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": "stat",
+        "title": "Latest Anomaly Rate (%)",
+        "gridPos": {"h": 6, "w": 6, "x": 6, "y": 0},
+        "targets": [
+          {
+            "datasource": "MLflow PostgreSQL",
+            "format": "table",
+            "rawSql": "SELECT ROUND(m.value::numeric * 100, 2) as anomaly_rate FROM metrics m JOIN runs r ON m.run_uuid = r.run_uuid WHERE m.key = 'anomaly_rate' AND r.experiment_id IN (SELECT experiment_id FROM experiments WHERE name = 'traffic_anomaly_detection') ORDER BY r.start_time DESC LIMIT 1",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": null, "color": "green"},
+                {"value": 5, "color": "yellow"},
+                {"value": 10, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": "timeseries",
+        "title": "Anomaly Rate Over Time",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+        "targets": [
+          {
+            "datasource": "MLflow PostgreSQL",
+            "format": "time_series",
+            "rawSql": "SELECT r.start_time as time, ROUND(m.value::numeric * 100, 2) as \"Anomaly Rate (%)\" FROM metrics m JOIN runs r ON m.run_uuid = r.run_uuid WHERE m.key = 'anomaly_rate' AND r.experiment_id IN (SELECT experiment_id FROM experiments WHERE name = 'traffic_anomaly_detection') ORDER BY r.start_time",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "fillOpacity": 10,
+              "showPoints": "always"
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "type": "table",
+        "title": "Recent Runs",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+        "targets": [
+          {
+            "datasource": "MLflow PostgreSQL",
+            "format": "table",
+            "rawSql": "SELECT r.run_uuid as \"Run ID\", TO_CHAR(TO_TIMESTAMP(r.start_time / 1000), 'YYYY-MM-DD HH24:MI:SS') as \"Start Time\", r.status as \"Status\", ROUND(m.value::numeric * 100, 2) as \"Anomaly Rate (%)\" FROM runs r LEFT JOIN metrics m ON r.run_uuid = m.run_uuid AND m.key = 'anomaly_rate' WHERE r.experiment_id IN (SELECT experiment_id FROM experiments WHERE name = 'traffic_anomaly_detection') ORDER BY r.start_time DESC LIMIT 10",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "type": "bargauge",
+        "title": "Run Status Distribution",
+        "gridPos": {"h": 6, "w": 6, "x": 12, "y": 0},
+        "targets": [
+          {
+            "datasource": "MLflow PostgreSQL",
+            "format": "table",
+            "rawSql": "SELECT status, COUNT(*) as count FROM runs WHERE experiment_id IN (SELECT experiment_id FROM experiments WHERE name = 'traffic_anomaly_detection') GROUP BY status",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": null, "color": "green"}
+              ]
+            }
+          }
+        },
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient"
+        }
+      }
+    ]
+}

@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.pyc
+
+# Virtual Environments
+airflow/airflow_venv/
+venv/
+env/
+ENV/
+
+# Airflow
+airflow/logs/
+airflow/airflow.db
+airflow/airflow.db-shm
+airflow/airflow.db-wal
+# airflow/dags/scored_output.csv
+# airflow/dags/visualizations/*.png
+# airflow/dags/visualizations/*.txt
+
+# MLflow
+mlruns/
+mlflow_artifacts/
+
+# Docker volumes (data persisted in named volumes)
+postgres_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

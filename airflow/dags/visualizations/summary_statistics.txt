@@ -1,0 +1,10 @@
+ANOMALY DETECTION SUMMARY
+==================================================
+
+Total Records: 209306
+Normal Records: 209103
+Anomalies Detected: 203
+Anomaly Rate (%): 0.1
+Min Anomaly Score: -0.0568
+Max Anomaly Score: 0.1639
+Mean Anomaly Score: 0.1105
